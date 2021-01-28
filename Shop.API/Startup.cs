@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace Shop.API
 {
@@ -34,6 +35,7 @@ namespace Shop.API
                 options.ReportApiVersions = true;
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
             });
         }
 
