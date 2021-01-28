@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Shop.API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class ProductsController : Controller
     {
         private readonly ShopContext _context;
@@ -61,15 +62,65 @@ namespace Shop.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProducts(int Id)
+        public async Task<IActionResult> GetProducts(int id)
         {
-            var product = await _context.Products.FindAsync(Id);
+            var product = await _context.Products.FindAsync(id);
 
             if (product == null) {
                 return NotFound();
             }
 
             return Ok(product);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct([FromBody] Product product) {
+
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(
+                "GetProducts",
+                new  { id = product.Id },
+                product
+            );
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProduct(int id, [FromBody] Product product) {
+            if (id != product.Id) {
+                return BadRequest();
+            }
+
+            _context.Entry(product).State = EntityState.Modified;
+
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateConcurrencyException) {
+
+                if(_context.Products.Find(id) == null) {
+                    return NotFound();
+                }
+
+                throw;
+
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Product>> DeleteProduct(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+
+            if (product == null) return NotFound();
+
+            _context.Entry(product).State = EntityState.Deleted;
+
+            await _context.SaveChangesAsync();
+
+            return product;
         }
     }
 }
