@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Shop.API.Models
@@ -7,6 +8,7 @@ namespace Shop.API.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public string Sku { get; set; }
 
         public string Name { get; set; }
