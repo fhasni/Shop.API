@@ -30,7 +30,11 @@ namespace Shop.API
             services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("SHOP"));
             services.AddControllers();
             services.AddSwaggerGen();
-
+            services.AddApiVersioning(options => {
+                options.ReportApiVersions = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,7 +44,7 @@ namespace Shop.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseHttpsRedirection();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -50,7 +54,7 @@ namespace Shop.API
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
 
             app.UseRouting();
